@@ -3,6 +3,7 @@ var startContainer = document.getElementById("start-container");
 var questionNumber = 0;
 var correct = 0;
 var previousAnswer = "start";
+var isGameOver = false;
 var questions = [
     {
         question: 'Commonly used data types DO NOT Include:',
@@ -51,15 +52,13 @@ var questions = [
     },
 ]
 
-startButton.addEventListener('click', startGame);
-
-function startGame() {
-    console.log('Started');
+var startGame = function () {
     startContainer.classList.add('hide');
+    startTimer();
     nextQuestion();
 }
 
-function nextQuestion() {
+var nextQuestion = function () {
     var questionContainer = document.createElement("div");
     questionContainer.className = "question-container";
     questionContainer.id = "question-container-" + questionNumber;
@@ -128,7 +127,7 @@ function nextQuestion() {
     mainContainer.appendChild(questionContainer);
 }
 
-function selectAnswer(event) {
+var selectAnswer = function (event) {
 
     var selectedButton = event.target;
 
@@ -144,6 +143,8 @@ function selectAnswer(event) {
         if (questionNumber < 5) {
             nextQuestion();
         } else {
+            debugger;
+            isGameOver = true;
             gameOver();
         }
     } else {
@@ -151,17 +152,20 @@ function selectAnswer(event) {
         questionContainer.classList.add('hide');
 
         previousAnswer = "incorrect";
+        loseTime();
 
         questionNumber++;
         if (questionNumber < 5) {
             nextQuestion();
         } else {
+            debugger;
+            isGameOver = true;
             gameOver();
         }
     }
 }
 
-function gameOver() {
+var gameOver = function () {
     var gameOver = document.createElement("div");
     gameOver.className = "game-over-container";
 
@@ -170,7 +174,8 @@ function gameOver() {
     gameOver.appendChild(gameOverTitle);
 
     var finalScore = document.createElement("p");
-    finalScore.textContent = "Your final score is " + correct + "/5";
+    // finalScore.textContent = "Your final score is " + correct + "/5";
+    finalScore.textContent = "Your final score is " + timeleft;
     gameOver.appendChild(finalScore);
 
     var form = document.createElement("form");
@@ -202,8 +207,9 @@ function gameOver() {
     mainContainer.appendChild(gameOver);
 }
 
-function setScore() {
-    var currentScore = correct + "/5";
+var setScore = function (event) {
+    // var currentScore = correct + "/5";
+    var currentScore = timeleft;
     var currentName = currentPlayer.value;
     var playerScores = [];
     var savedScores = localStorage.getItem("scores");
@@ -222,11 +228,13 @@ function setScore() {
         localStorage.setItem("scores", JSON.stringify(getSavedScores));
     }
 
-    debugger;
+    var gameOver = document.querySelector(".game-over-container");
+    gameOver.className = "hide";
     highScore();
+    event.preventDefault();
 }
 
-function sortScores(arr1, arr2) {
+var sortScores = function (arr1, arr2) {
     if (arr1[1] < arr2[1]) {
         return 1;
     } else if (arr1[1] === arr2[1] && arr1[0] < arr2[0]) {
@@ -238,10 +246,8 @@ function sortScores(arr1, arr2) {
     }
 }
 
-function highScore() {
-
-    var gameOver = document.querySelector(".game-over-container");
-    gameOver.className = "hide";
+var highScore = function () {
+    startContainer.classList.add('hide');
 
     var highScoreContainer = document.createElement("div");
     highScoreContainer.className = "high-score-container";
@@ -253,39 +259,83 @@ function highScore() {
     var getSavedScores = localStorage.getItem("scores");
     getSavedScores = JSON.parse(getSavedScores);
 
+    var scoreContainer = document.createElement("div");
+    scoreContainer.className = "score-container";
+
+    if (getSavedScores == null) {
+        window.alert("There are currently no high scores. Please refresh the page.");
+        location.reload();
+    }
+
     for (var i = 0; i < getSavedScores.length; i++) {
         var score = document.createElement("p");
         var iCount = i + 1;
         score.className = "high-score";
-        score.textContent = iCount + ". " + getSavedScores[i][0] + " - " + getSavedScores[i][1];
-        highScoreContainer.appendChild(score);
+        score.textContent = iCount + ". " + getSavedScores[i][0] + ": " + getSavedScores[i][1];
+        scoreContainer.appendChild(score);
     }
 
-    var buttonContainer = document.createElement("div");
-    buttonContainer.className = "button-container";
-    highScoreContainer.appendChild(buttonContainer);
+    highScoreContainer.appendChild(scoreContainer);
 
     var goBack = document.createElement("button");
-    goBack.className = "btn";
-    goBack.textContent = "Go Back";
-    buttonContainer.appendChild(goBack);
-
-    goBack.addEventListener('click', startGame);
+    goBack.className = "btn high-score-btn";
+    goBack.textContent = "Retake Quiz";
+    highScoreContainer.appendChild(goBack);
 
     var clearHighScores = document.createElement("button");
-    clearHighScores.className = "btn";
+    clearHighScores.className = "btn high-score-btn";
     clearHighScores.textContent = "Clear High Scores";
-    buttonContainer.appendChild(clearHighScores);
+    highScoreContainer.appendChild(clearHighScores);
+
+    var resetHighScores = function () {
+        var scoreContainer = document.querySelector('.score-container');
+        scoreContainer.className = "hide";
+
+        localStorage.clear();
+    }
 
     clearHighScores.addEventListener('click', resetHighScores);
 
-    function resetHighScores() {
-        getSavedScores = [];
-        var highScore = document.getElementsByClassName('high-score');
-        highScore.className = "hide";
+    var restartGame = function () {
+        location.reload();
     }
+
+    goBack.addEventListener('click', restartGame);
 
     // add to main container
     var mainContainer = document.getElementById("main-container");
     mainContainer.appendChild(highScoreContainer);
 }
+
+var startTime = 90;
+document.getElementById("timer").textContent = startTime;
+var timeleft = document.getElementById("timer").textContent;
+
+var startTimer = function () {
+    var downloadTimer = setInterval(function () {
+        document.getElementById("timer").textContent = timeleft;
+        timeleft -= 1;
+
+        if (isGameOver === true) {
+            timeleft = timeleft + 1;
+            clearInterval(downloadTimer);
+        } else if (timeleft < 0) {
+            clearInterval(downloadTimer);
+            var questionContainer = document.querySelector('#question-container-' + questionNumber);
+            questionContainer.classList.add('hide');
+            timeleft = 0;
+            document.getElementById("timer").textContent = timeleft;
+            gameOver();
+        }
+    }, 1000);
+}
+
+var loseTime = function () {
+    timeleft = timeleft - 10;
+    document.getElementById("timer").textContent = timeleft;
+}
+
+var viewHighScores = document.getElementById("view-high-scores");
+viewHighScores.addEventListener('click', highScore);
+
+startButton.addEventListener('click', startGame);
