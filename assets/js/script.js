@@ -1,6 +1,5 @@
 var startButton = document.getElementById("start-btn");
 var startContainer = document.getElementById("start-container");
-var questionContainer = document.getElementById("question-container");
 var questionNumber = 0;
 var questions = [
     {
@@ -34,9 +33,18 @@ var questions = [
         question: 'String values must be enclosed within _____ when being assigned to variables',
         answers: [
             { text: '1. commas', correct: false },
-            { text: '2. curly brackets', correct: true },
-            { text: '3. quotes', correct: false },
-            { text: '4. parenthesis', correct: true },
+            { text: '2. curly brackets', correct: false },
+            { text: '3. quotes', correct: true },
+            { text: '4. parenthesis', correct: false },
+        ]
+    },
+    {
+        question: 'A very useful tool used during development and debugging for printing content to the debugger is:',
+        answers: [
+            { text: '1. JavaScript', correct: false },
+            { text: '2. terminal/bash', correct: false },
+            { text: '3. for loops', correct: false },
+            { text: '4. console.log', correct: true },
         ]
     },
 ]
@@ -46,6 +54,9 @@ startButton.addEventListener('click', startGame);
 function startGame() {
     console.log('Started');
     startContainer.classList.add('hide');
+
+
+
     nextQuestion();
 }
 
@@ -94,13 +105,13 @@ function nextQuestion() {
 
     answerFour.addEventListener('click', selectAnswer);
 
+    // add to main container
     var mainContainer = document.getElementById("main-container");
     mainContainer.appendChild(questionContainer);
 }
 
 function selectAnswer(event) {
     var selectedButton = event.target;
-    var questionContainer = document.getElementsByClassName("question-container");
 
     var answer = selectedButton.getAttribute('data-correct');
     if (answer == 'true') {
