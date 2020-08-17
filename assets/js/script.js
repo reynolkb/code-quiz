@@ -1,6 +1,8 @@
 var startButton = document.getElementById("start-btn");
 var startContainer = document.getElementById("start-container");
 var questionNumber = 0;
+var correct = 0;
+var previousAnswer = "start";
 var questions = [
     {
         question: 'Commonly used data types DO NOT Include:',
@@ -54,15 +56,13 @@ startButton.addEventListener('click', startGame);
 function startGame() {
     console.log('Started');
     startContainer.classList.add('hide');
-
-
-
     nextQuestion();
 }
 
 function nextQuestion() {
     var questionContainer = document.createElement("div");
     questionContainer.className = "question-container";
+    questionContainer.id = "question-container-" + questionNumber;
 
     // Set Question Text
     var questionText = document.createElement("h2");
@@ -105,21 +105,53 @@ function nextQuestion() {
 
     answerFour.addEventListener('click', selectAnswer);
 
+    if (previousAnswer === "start") {
+        var rightWrong = document.createElement("p");
+        rightWrong.className = "hide";
+        questionContainer.appendChild(rightWrong);
+    } else if (previousAnswer === "correct") {
+        var rightWrong = document.createElement("p");
+        rightWrong.className = "rightWrong";
+        rightWrong.style.color = "green";
+        rightWrong.textContent = "Previous Answer: Correct";
+        questionContainer.appendChild(rightWrong);
+    } else if (previousAnswer === "incorrect") {
+        var rightWrong = document.createElement("p");
+        rightWrong.className = "rightWrong";
+        rightWrong.style.color = "red";
+        rightWrong.textContent = "Previous Answer: Incorrect";
+        questionContainer.appendChild(rightWrong);
+    }
+
     // add to main container
     var mainContainer = document.getElementById("main-container");
     mainContainer.appendChild(questionContainer);
 }
 
 function selectAnswer(event) {
+
     var selectedButton = event.target;
 
     var answer = selectedButton.getAttribute('data-correct');
     if (answer == 'true') {
-        selectedButton.classList.add("correct");
+        var questionContainer = document.querySelector('#question-container-' + questionNumber);
+        questionContainer.classList.add('hide');
+
+        correct++;
+        previousAnswer = "correct";
+
         questionNumber++;
-        nextQuestion();
+        if (questionNumber < 5) {
+            nextQuestion();
+        } else {
+            console.log("game over");
+        }
     } else {
-        selectedButton.classList.add("incorrect");
+        var questionContainer = document.querySelector('#question-container-' + questionNumber);
+        questionContainer.classList.add('hide');
+
+        previousAnswer = "incorrect";
+
         questionNumber++;
         nextQuestion();
     }

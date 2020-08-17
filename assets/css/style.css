@@ -10,14 +10,19 @@ body {
     background-color: #12CBC4;
 }
 
-header {
+.header {
     display: flex;
     justify-content: space-between;
 }
 
 /* Quiz Container*/
 
-.start-container, .question-container {
+.start-container, 
+.question-container, 
+.question-container-0, 
+.question-container-1, 
+.question-container-2, 
+.question-container-3{
     background-color: white;
     display: block;
     text-align: center;
@@ -48,12 +53,12 @@ header {
     font-size: 125%;
 }
 
-.correct {
-    background-color: green;
-}
-
-.incorrect {
-    background-color: red;
+.rightWrong {
+    border-top: solid grey;
+    margin: 20px 10px 10px 10px;
+    padding-top: 10px;
+    font-size: 120%;
+    font-weight: bold;
 }
 
 /* Hide */
