@@ -144,7 +144,7 @@ function selectAnswer(event) {
         if (questionNumber < 5) {
             nextQuestion();
         } else {
-            console.log("game over");
+            gameOver();
         }
     } else {
         var questionContainer = document.querySelector('#question-container-' + questionNumber);
@@ -153,6 +153,139 @@ function selectAnswer(event) {
         previousAnswer = "incorrect";
 
         questionNumber++;
-        nextQuestion();
+        if (questionNumber < 5) {
+            nextQuestion();
+        } else {
+            gameOver();
+        }
     }
+}
+
+function gameOver() {
+    var gameOver = document.createElement("div");
+    gameOver.className = "game-over-container";
+
+    var gameOverTitle = document.createElement("h2");
+    gameOverTitle.textContent = "All Done!";
+    gameOver.appendChild(gameOverTitle);
+
+    var finalScore = document.createElement("p");
+    finalScore.textContent = "Your final score is " + correct + "/5";
+    gameOver.appendChild(finalScore);
+
+    var form = document.createElement("form");
+    gameOver.appendChild(form);
+
+    var formLabel = document.createElement("label");
+    formLabel.htmlFor = "currentPlayer";
+    formLabel.textContent = "Enter your name:";
+    formLabel.style.padding = "0 10px 0 0";
+    form.appendChild(formLabel);
+
+    var formInput = document.createElement("input");
+    formInput.id = "currentPlayer";
+    formInput.type = "text";
+    form.appendChild(formInput);
+
+    var formSubmit = document.createElement("input");
+    formSubmit.type = "submit";
+    formSubmit.value = "submit";
+    formSubmit.className = "btn";
+    formSubmit.style.margin = "0 0 0 10px";
+    formSubmit.style.display = "inline-block";
+    form.appendChild(formSubmit);
+
+    formSubmit.addEventListener('click', setScore);
+
+    // add to main container
+    var mainContainer = document.getElementById("main-container");
+    mainContainer.appendChild(gameOver);
+}
+
+function setScore() {
+    var currentScore = correct + "/5";
+    var currentName = currentPlayer.value;
+    var playerScores = [];
+    var savedScores = localStorage.getItem("scores");
+
+    if (!savedScores) {
+        // playerScores.push({ name: currentName, score: currentScore });
+        playerScores.push([currentName, currentScore]);
+        localStorage.setItem("scores", JSON.stringify(playerScores));
+    } else {
+        var getSavedScores = localStorage.getItem("scores");
+        getSavedScores = JSON.parse(getSavedScores);
+        // getSavedScores.push({ name: currentName, score: currentScore });
+        getSavedScores.push([currentName, currentScore]);
+        // sort high scores
+        getSavedScores.sort(sortScores);
+        localStorage.setItem("scores", JSON.stringify(getSavedScores));
+    }
+
+    debugger;
+    highScore();
+}
+
+function sortScores(arr1, arr2) {
+    if (arr1[1] < arr2[1]) {
+        return 1;
+    } else if (arr1[1] === arr2[1] && arr1[0] < arr2[0]) {
+        return -1;
+    } else if (arr1[1] > arr2[1]) {
+        return -1;
+    } else if (arr1[1] === arr2[1] && arr1[0] > arr2[0]) {
+        return 1;
+    }
+}
+
+function highScore() {
+
+    var gameOver = document.querySelector(".game-over-container");
+    gameOver.className = "hide";
+
+    var highScoreContainer = document.createElement("div");
+    highScoreContainer.className = "high-score-container";
+
+    var highScoreTitle = document.createElement("h2");
+    highScoreTitle.textContent = "High Scores";
+    highScoreContainer.appendChild(highScoreTitle);
+
+    var getSavedScores = localStorage.getItem("scores");
+    getSavedScores = JSON.parse(getSavedScores);
+
+    for (var i = 0; i < getSavedScores.length; i++) {
+        var score = document.createElement("p");
+        var iCount = i + 1;
+        score.className = "high-score";
+        score.textContent = iCount + ". " + getSavedScores[i][0] + " - " + getSavedScores[i][1];
+        highScoreContainer.appendChild(score);
+    }
+
+    var buttonContainer = document.createElement("div");
+    buttonContainer.className = "button-container";
+    highScoreContainer.appendChild(buttonContainer);
+
+    var goBack = document.createElement("button");
+    goBack.className = "btn";
+    goBack.textContent = "Go Back";
+    buttonContainer.appendChild(goBack);
+
+    goBack.addEventListener('click', startGame);
+
+    var clearHighScores = document.createElement("button");
+    clearHighScores.className = "btn";
+    clearHighScores.textContent = "Clear High Scores";
+    buttonContainer.appendChild(clearHighScores);
+
+    clearHighScores.addEventListener('click', resetHighScores);
+
+    function resetHighScores() {
+        getSavedScores = [];
+        var highScore = document.getElementsByClassName('high-score');
+        highScore.className = "hide";
+    }
+
+    // add to main container
+    var mainContainer = document.getElementById("main-container");
+    mainContainer.appendChild(highScoreContainer);
 }
