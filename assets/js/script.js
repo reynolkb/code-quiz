@@ -245,8 +245,6 @@ var sortScores = function (arr1, arr2) {
 
 var highScore = function () {
     startContainer.classList.add('hide');
-    var gameOverContainer = document.querySelector(".game-over-container");
-    gameOverContainer.className = "hide";
 
     var highScoreContainer = document.createElement("div");
     highScoreContainer.className = "high-score-container";
@@ -262,7 +260,7 @@ var highScore = function () {
     scoreContainer.className = "score-container";
 
     if (getSavedScores == null) {
-        window.alert("There are currently no high scores. Please refresh the page.");
+        window.alert("There are currently no high scores. The page will refresh.");
         location.reload();
     }
 
