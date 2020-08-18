@@ -1,8 +1,17 @@
+// grabs start button and container for manipulation later on.
 var startButton = document.getElementById("start-btn");
 var startContainer = document.getElementById("start-container");
+
+// sets the question number to 0, after each question you add 1.
 var questionNumber = 0;
+
+// variable to determine if their previous answer was correct or not.
 var previousAnswer = "start";
+
+// boolean to check if the game is over.
 var isGameOver = false;
+
+// object to store all questions and their answers.
 var questions = [
     {
         question: 'Commonly used data types DO NOT Include:',
@@ -51,12 +60,14 @@ var questions = [
     },
 ]
 
+// starts the game and hides the intro section.
 var startGame = function () {
     startContainer.classList.add('hide');
     startTimer();
     nextQuestion();
 }
 
+// loads the next question.
 var nextQuestion = function () {
     var questionContainer = document.createElement("div");
     questionContainer.className = "question-container";
@@ -103,6 +114,7 @@ var nextQuestion = function () {
 
     answerFour.addEventListener('click', selectAnswer);
 
+    // logic if the previous question was correct or not. if the answer was correct you show correct text in green. if the answer was incorrect you show incorrect in red.
     if (previousAnswer === "start") {
         var rightWrong = document.createElement("p");
         rightWrong.className = "hide";
@@ -126,6 +138,7 @@ var nextQuestion = function () {
     mainContainer.appendChild(questionContainer);
 }
 
+// performs logic based on the answer selected. hides the previous question.
 var selectAnswer = function (event) {
 
     var selectedButton = event.target;
@@ -162,6 +175,7 @@ var selectAnswer = function (event) {
     }
 }
 
+// loads the game over section.
 var gameOver = function () {
     var gameOver = document.createElement("div");
     gameOver.className = "game-over-container";
@@ -171,7 +185,6 @@ var gameOver = function () {
     gameOver.appendChild(gameOverTitle);
 
     var finalScore = document.createElement("p");
-    // finalScore.textContent = "Your final score is " + correct + "/5";
     finalScore.textContent = "Your final score is " + timeleft;
     gameOver.appendChild(finalScore);
 
@@ -204,6 +217,7 @@ var gameOver = function () {
     mainContainer.appendChild(gameOver);
 }
 
+// sets the score based on the time.
 var setScore = function (event) {
     var currentScore = timeleft;
     console.log(currentScore);
@@ -231,6 +245,7 @@ var setScore = function (event) {
     event.preventDefault();
 }
 
+// sorts the scores based on the time then by the name in alphabetical order if the scores are the same.
 var sortScores = function (arr1, arr2) {
     if (arr1[1] < arr2[1]) {
         return 1;
@@ -243,6 +258,7 @@ var sortScores = function (arr1, arr2) {
     }
 }
 
+// shows the high score section along with the high scores.
 var highScore = function () {
     startContainer.classList.add('hide');
 
@@ -323,11 +339,13 @@ var highScore = function () {
         gameOver.className = "hide"; */
 }
 
+// variables for the timer function.
 var startTime = 90;
 document.getElementById("timer").textContent = "Time: " + startTime;
 var timeLeftString = document.getElementById("timer").textContent;
 var timeleft = parseInt(timeLeftString.slice(5));
 
+// timer function that begins when the user starts the quiz.
 var startTimer = function () {
     var downloadTimer = setInterval(function () {
         document.getElementById("timer").textContent = "Time: " + timeleft;
@@ -350,12 +368,15 @@ var startTimer = function () {
     }, 1000);
 }
 
+// user looses 9 seconds along with the 1 second from the function above for a total of 10 seconds if their previous answer was incorrect.
 var loseTime = function () {
     timeleft = timeleft - 9;
     document.getElementById("timer").textContent = "Time: " + timeleft;
 }
 
+// adds event listener to view high scores in header
 var viewHighScores = document.getElementById("view-high-scores");
 viewHighScores.addEventListener('click', highScore);
 
+// adds event listener to start button.
 startButton.addEventListener('click', startGame);
