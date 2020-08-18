@@ -1,7 +1,6 @@
 var startButton = document.getElementById("start-btn");
 var startContainer = document.getElementById("start-container");
 var questionNumber = 0;
-var correct = 0;
 var previousAnswer = "start";
 var isGameOver = false;
 var questions = [
@@ -136,7 +135,6 @@ var selectAnswer = function (event) {
         var questionContainer = document.querySelector('#question-container-' + questionNumber);
         questionContainer.classList.add('hide');
 
-        correct++;
         previousAnswer = "correct";
 
         questionNumber++;
@@ -158,7 +156,6 @@ var selectAnswer = function (event) {
         if (questionNumber < 5) {
             nextQuestion();
         } else {
-            debugger;
             isGameOver = true;
             gameOver();
         }
@@ -208,8 +205,8 @@ var gameOver = function () {
 }
 
 var setScore = function (event) {
-    // var currentScore = correct + "/5";
     var currentScore = timeleft;
+    console.log(currentScore);
     var currentName = currentPlayer.value;
     var playerScores = [];
     var savedScores = localStorage.getItem("scores");
@@ -248,6 +245,8 @@ var sortScores = function (arr1, arr2) {
 
 var highScore = function () {
     startContainer.classList.add('hide');
+    var gameOverContainer = document.querySelector(".game-over-container");
+    gameOverContainer.className = "hide";
 
     var highScoreContainer = document.createElement("div");
     highScoreContainer.className = "high-score-container";
@@ -308,16 +307,17 @@ var highScore = function () {
 }
 
 var startTime = 90;
-document.getElementById("timer").textContent = startTime;
-var timeleft = document.getElementById("timer").textContent;
+document.getElementById("timer").textContent = "Time: " + startTime;
+var timeLeftString = document.getElementById("timer").textContent;
+var timeleft = parseInt(timeLeftString.slice(5));
 
 var startTimer = function () {
     var downloadTimer = setInterval(function () {
-        document.getElementById("timer").textContent = timeleft;
-        timeleft -= 1;
+        document.getElementById("timer").textContent = "Time: " + timeleft;
+        // timeleft = "Time: " + timeleft;
 
         if (isGameOver === true) {
-            timeleft = timeleft + 1;
+            // timeleft = timeleft + 1;
             clearInterval(downloadTimer);
         } else if (timeleft < 0) {
             clearInterval(downloadTimer);
@@ -326,13 +326,16 @@ var startTimer = function () {
             timeleft = 0;
             document.getElementById("timer").textContent = timeleft;
             gameOver();
+        } else {
+            timeleft -= 1;
         }
+
     }, 1000);
 }
 
 var loseTime = function () {
-    timeleft = timeleft - 10;
-    document.getElementById("timer").textContent = timeleft;
+    timeleft = timeleft - 9;
+    document.getElementById("timer").textContent = "Time: " + timeleft;
 }
 
 var viewHighScores = document.getElementById("view-high-scores");
