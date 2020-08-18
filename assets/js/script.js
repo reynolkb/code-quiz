@@ -302,6 +302,25 @@ var highScore = function () {
     // add to main container
     var mainContainer = document.getElementById("main-container");
     mainContainer.appendChild(highScoreContainer);
+
+    /*     debugger;
+        var questionContainer0 = document.getElementById("question-container-0");
+        questionContainer0.className = "hide";
+    
+        var questionContainer1 = document.getElementById("question-container-1");
+        questionContainer1.className = "hide";
+    
+        var questionContainer2 = document.getElementById("question-container-2");
+        questionContainer2.className = "hide";
+    
+        var questionContainer3 = document.getElementById("question-container-3");
+        questionContainer3.className = "hide";
+    
+        var questionContainer4 = document.getElementById("question-container-4");
+        questionContainer4.className = "hide";
+    
+        var gameOver = document.querySelector(".game-over-container");
+        gameOver.className = "hide"; */
 }
 
 var startTime = 90;
