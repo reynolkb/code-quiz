@@ -5,7 +5,6 @@
 }
 
 /* Body */
-
 body {
     background-color: #5758BB;
     width: 1000px;
@@ -22,7 +21,6 @@ body {
 }
 
 /* Quiz Container*/
-
 .start-container, 
 .question-container, 
 .question-container-0, 
@@ -40,6 +38,7 @@ body {
     border-radius: 5px;
 }
 
+/* Button formatting */
 .btn {
     background-color: var(--primary);
     color: white;
@@ -65,21 +64,18 @@ body {
     font-size: 125%;
 }
 
+.high-score-btn {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+/* If previous answer was right or wrong */
 .rightWrong {
     border-top: solid grey;
     margin: 20px 10px 10px 10px;
     padding-top: 10px;
     font-size: 120%;
     font-weight: bold;
-}
-
-/* .button-container {
-    margin: 0 auto;
-} */
-
-.high-score-btn {
-    display: inline-block;
-    margin-left: 10px;
 }
 
 /* Hide */

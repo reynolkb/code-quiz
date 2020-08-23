@@ -140,10 +140,9 @@ var nextQuestion = function () {
 
 // performs logic based on the answer selected. hides the previous question.
 var selectAnswer = function (event) {
-
     var selectedButton = event.target;
-
     var answer = selectedButton.getAttribute('data-correct');
+
     if (answer == 'true') {
         var questionContainer = document.querySelector('#question-container-' + questionNumber);
         questionContainer.classList.add('hide');
@@ -177,6 +176,7 @@ var selectAnswer = function (event) {
 
 // loads the game over section.
 var gameOver = function () {
+    // create game over elements
     var gameOver = document.createElement("div");
     gameOver.className = "game-over-container";
 
@@ -220,19 +220,19 @@ var gameOver = function () {
 // sets the score based on the time.
 var setScore = function (event) {
     var currentScore = timeleft;
-    console.log(currentScore);
     var currentName = currentPlayer.value;
     var playerScores = [];
     var savedScores = localStorage.getItem("scores");
 
+    // if the saved score is blank then add them
     if (!savedScores) {
-        // playerScores.push({ name: currentName, score: currentScore });
         playerScores.push([currentName, currentScore]);
         localStorage.setItem("scores", JSON.stringify(playerScores));
-    } else {
+    }
+    // if not get the saved scores
+    else {
         var getSavedScores = localStorage.getItem("scores");
         getSavedScores = JSON.parse(getSavedScores);
-        // getSavedScores.push({ name: currentName, score: currentScore });
         getSavedScores.push([currentName, currentScore]);
         // sort high scores
         getSavedScores.sort(sortScores);
@@ -260,8 +260,10 @@ var sortScores = function (arr1, arr2) {
 
 // shows the high score section along with the high scores.
 var highScore = function () {
+    // hides the start container
     startContainer.classList.add('hide');
 
+    // creates the high score elements
     var highScoreContainer = document.createElement("div");
     highScoreContainer.className = "high-score-container";
 
@@ -275,11 +277,13 @@ var highScore = function () {
     var scoreContainer = document.createElement("div");
     scoreContainer.className = "score-container";
 
+    // if there's nothing in the saved scores then alert that and reload the page
     if (getSavedScores == null) {
         window.alert("There are currently no high scores. The page will refresh.");
         location.reload();
     }
 
+    // create a new high score section for each highscore in the array
     for (var i = 0; i < getSavedScores.length; i++) {
         var score = document.createElement("p");
         var iCount = i + 1;
@@ -290,16 +294,19 @@ var highScore = function () {
 
     highScoreContainer.appendChild(scoreContainer);
 
+    // go back button
     var goBack = document.createElement("button");
     goBack.className = "btn high-score-btn";
     goBack.textContent = "Retake Quiz";
     highScoreContainer.appendChild(goBack);
 
+    // clear high scores button
     var clearHighScores = document.createElement("button");
     clearHighScores.className = "btn high-score-btn";
     clearHighScores.textContent = "Clear High Scores";
     highScoreContainer.appendChild(clearHighScores);
 
+    // reset high scores
     var resetHighScores = function () {
         var scoreContainer = document.querySelector('.score-container');
         scoreContainer.className = "hide";
@@ -309,6 +316,7 @@ var highScore = function () {
 
     clearHighScores.addEventListener('click', resetHighScores);
 
+    // restart game
     var restartGame = function () {
         location.reload();
     }
@@ -318,25 +326,6 @@ var highScore = function () {
     // add to main container
     var mainContainer = document.getElementById("main-container");
     mainContainer.appendChild(highScoreContainer);
-
-    /*     debugger;
-        var questionContainer0 = document.getElementById("question-container-0");
-        questionContainer0.className = "hide";
-    
-        var questionContainer1 = document.getElementById("question-container-1");
-        questionContainer1.className = "hide";
-    
-        var questionContainer2 = document.getElementById("question-container-2");
-        questionContainer2.className = "hide";
-    
-        var questionContainer3 = document.getElementById("question-container-3");
-        questionContainer3.className = "hide";
-    
-        var questionContainer4 = document.getElementById("question-container-4");
-        questionContainer4.className = "hide";
-    
-        var gameOver = document.querySelector(".game-over-container");
-        gameOver.className = "hide"; */
 }
 
 // variables for the timer function.
@@ -349,19 +338,22 @@ var timeleft = parseInt(timeLeftString.slice(5));
 var startTimer = function () {
     var downloadTimer = setInterval(function () {
         document.getElementById("timer").textContent = "Time: " + timeleft;
-        // timeleft = "Time: " + timeleft;
 
+        // if the game is over clear the timer
         if (isGameOver === true) {
-            // timeleft = timeleft + 1;
             clearInterval(downloadTimer);
-        } else if (timeleft < 0) {
+        }
+        // else if time is under 0 clear the timer and run the game over function
+        else if (timeleft < 0) {
             clearInterval(downloadTimer);
             var questionContainer = document.querySelector('#question-container-' + questionNumber);
             questionContainer.classList.add('hide');
             timeleft = 0;
             document.getElementById("timer").textContent = timeleft;
             gameOver();
-        } else {
+        }
+        // otherwise remove 1 from the timer
+        else {
             timeleft -= 1;
         }
 
