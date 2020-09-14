@@ -311,7 +311,7 @@ var highScore = function () {
         var scoreContainer = document.querySelector('.score-container');
         scoreContainer.className = "hide";
 
-        localStorage.clear();
+        localStorage.removeItem("scores");
     }
 
     clearHighScores.addEventListener('click', resetHighScores);
